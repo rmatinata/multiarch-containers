@@ -1,0 +1,8 @@
+- set_fact:
+    outer_item: "{{item}}"
+
+- stat: path={{work_dir}}/arch/{{outer_item}}/Dockerfile
+  register: result
+ 
+- shell: "{{work_dir}}/arch/build.sh {{outer_item}}"
+  when: result.stat.exists

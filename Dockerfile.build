@@ -1,0 +1,3 @@
+FROM BASE
+COPY EMULATOR-static PATH/
+

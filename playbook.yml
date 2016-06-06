@@ -1,0 +1,92 @@
+- name: Docker playbooks
+  hosts: localhost
+  gather_facts : yes
+  become: yes
+  become_method: sudo
+
+  vars:
+    docker_pkg: default
+    work_dir: /tmp/wrk_dir
+    qemu_url: http://ftp.fr.debian.org/debian/pool/main/q/qemu/qemu-user-static_2.6+dfsg-1+b1_amd64.deb
+    target_qemu_dir: /usr/bin/
+    binfmt_reg: /proc/sys/fs/binfmt_misc/register
+  vars_files:
+    - vars.yml
+
+  tasks:
+  - name: fix Fedora Ansible
+    raw: dnf install -y python2-dnf libselinux-python python2
+    when: ansible_os_family == "RedHat"
+
+  - name: create working dir
+    file: path={{work_dir}} state=directory mode=0755
+
+  - name: verifying target qemu dir
+    file: path={{target_qemu_dir}} state=directory
+
+  - name: install working deps 
+    package : name={{item}} state=present
+    with_items:
+      - dpkg
+      - wget
+
+  - name: docker package for Debian
+    set_fact:
+      docker_pkg: docker.io
+    when: ansible_os_family == "Debian"
+
+  - name: docker package for rpm
+    set_fact:
+      docker_pkg: docker
+    when: ansible_os_family == "RedHat"
+  
+  - name: install docker
+    package : name={{docker_pkg}} state=present
+    notify:
+    - enable docker
+    - restart docker
+
+  - name: Fetching static qemu
+    get_url: url={{qemu_url}} dest={{work_dir}}/qemu-static.deb
+
+  - name: Extracting
+    command: dpkg-deb -x {{work_dir}}/qemu-static.deb {{work_dir}}/qemu
+
+  - name: Copy static qemu in place
+    copy: src={{item}} dest={{target_qemu_dir}} remote_src=True force=yes mode=755
+    with_fileglob:
+      - "{{work_dir}}/qemu/usr/bin/qemu-*-static"
+
+  - name: detect binfmt hooks
+    stat: path=/proc/sys/fs/binfmt_misc/{{item}}
+    register: binfmt_hook
+    with_items: "{{binfmt_emulators}}"
+
+  - name: clean binfmt hook
+    shell: echo -1 > {{item.stat.path}}
+    when: item.stat.exists
+    with_items: "{{binfmt_hook.results}}"
+
+  - name: apply binfmt hooks
+    shell: echo "{{item}}" >> {{binfmt_reg}}
+    with_items: "{{binfmt_rules}}"
+
+  - name: Copy Dockerfiles in place
+    copy: src=arch dest={{work_dir}} force=yes
+
+  - name: Fix build.sh permissions
+    file: path={{work_dir}}/arch/build.sh mode=0755
+
+  - name: build all containers
+    include: containers.yml
+    with_items: "{{binfmt_emulators}}"
+
+  handlers:
+    - name: enable docker
+      service:
+        name: docker
+        enabled: yes
+    - name: restart docker
+      service:
+        name: docker
+        state: restarted

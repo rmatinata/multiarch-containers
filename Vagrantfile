@@ -69,7 +69,7 @@ Vagrant.configure(2) do |config|
     if [ ! -f /vagrant/playbook.yml ]; then
       wrk_dir=$(mktemp -d)
       pushd $wrk_dir
-      curl -L -O -s https://github.com/rmatinata/multiarch-test/archive/master.tar.gz
+      curl -L -O -s https://github.com/rmatinata/multiarch-containers/archive/master.tar.gz
       tar -zxf ./master.tar.gz
       content=( */ )
       content=( "${content[@]%/}" )

@@ -60,3 +60,13 @@ FROM s390x/ubuntu-multiarch:x86_s390x
 ...
 ```
 
+### How to simply run it
+
+If you are interesting in just using one of the pre-built containers, you can do something like:
+
+```
+# docker -it --rm ppc64le/ubuntu-multiarch:x86_ppc64le /bin/bash
+root@:/# uname -a
+Linux 3.10.0-327.13.1.el7.x86_64 #1 SMP Thu Mar 31 16:04:38 UTC 2016 ppc64le ppc64le ppc64le GNU/Linux
+```
+

@@ -28,23 +28,6 @@
       - dpkg
       - wget
 
-  - name: docker package for Debian
-    set_fact:
-      docker_pkg: docker.io
-    when: ansible_os_family == "Debian"
-
-  - name: docker package for rpm
-    set_fact:
-      docker_pkg: docker
-    when: ansible_os_family == "RedHat"
-
-  - name: install docker
-    package : name={{docker_pkg}} state=present
-    notify:
-    - enable docker
-    - restart docker
-
-  tasks:
   - name: Fetching static qemu
     get_url: url={{qemu_url}} dest={{work_dir}}/qemu-static.deb
 
@@ -70,6 +53,24 @@
     shell: echo "{{item}}" >> {{binfmt_reg}}
     with_items: "{{binfmt_rules}}"
 
+  tasks:
+  - name: docker package for Debian
+    set_fact:
+      docker_pkg: docker.io
+    when: ansible_os_family == "Debian"
+
+  - name: docker package for rpm
+    set_fact:
+      docker_pkg: docker
+    when: ansible_os_family == "RedHat"
+
+  - name: install docker
+    package : name={{docker_pkg}} state=present
+    notify:
+    - enable docker
+    - restart docker
+
+  post_tasks:
   - name: Copy Dockerfiles in place
     copy: src=arch dest={{work_dir}} force=yes
 

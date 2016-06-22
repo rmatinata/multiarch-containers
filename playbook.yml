@@ -10,6 +10,7 @@
     binfmt_reg: /proc/sys/fs/binfmt_misc/register
   vars_files:
     - vars.yml
+    - "hosts/{{ ansible_architecture }}.yml"
 
   pre_tasks:
   - name: fix Fedora Ansible

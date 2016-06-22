@@ -15,7 +15,6 @@ versions=( "${versions[@]%/}" )
 
 cat > ${VARSFILE} <<EOF
 target_qemu_dir: ${EMULATORDIR}/
-qemu_url: ${QEMUURL}
 binfmt_emulators:
 EOF
 for version in "${versions[@]}"; do

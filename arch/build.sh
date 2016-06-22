@@ -14,13 +14,16 @@ WRKDIR=$(mktemp -d)
 for emulator in "${versions[@]}"; do
 	if [ -f ${OWNPATH}/${emulator}/Dockerfile -a -f ${OWNPATH}/${emulator}/base ]; then
 		arch=$(echo ${emulator} | cut -f2 -d-)
-                base=$(cat ${OWNPATH}/${emulator}/base)
-		mkdir ${WRKDIR}/${emulator}
-		cp -ar ${OWNPATH}/${emulator}/* ${WRKDIR}/${emulator}
-		cp ${EMULATORDIR}/${emulator}-static ${WRKDIR}/${emulator}
-		# TBD Append Custom Dockerfiles
-		sudo docker rmi ${arch}/qemu-base
-		sudo docker build --rm -t ${base}-multiarch:x86_${arch} ${WRKDIR}/${emulator}
+		host=$(uname -m)
+		if [ ${arch} != ${host} ]; then
+                	base=$(cat ${OWNPATH}/${emulator}/base)
+			mkdir ${WRKDIR}/${emulator}
+			cp -ar ${OWNPATH}/${emulator}/* ${WRKDIR}/${emulator}
+			cp ${EMULATORDIR}/${emulator}-static ${WRKDIR}/${emulator}
+			# TBD Append Custom Dockerfiles
+			sudo docker rmi ${arch}/qemu-base
+			sudo docker build --rm -t ${base}-multiarch:${host}_${arch} ${WRKDIR}/${emulator}
+		fi
 	fi
 done
 

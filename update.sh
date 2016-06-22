@@ -42,7 +42,7 @@ EOF
 		image=$(cat ${BUILDPATH}/${emulator}/base)
 		cp ${OWNPATH}/Dockerfile.build ${BUILDPATH}/${emulator}/Dockerfile
 		sed -e 's_BASE_'"$image"'_g' -i "" ${BUILDPATH}/${emulator}/Dockerfile
-		sed -e 's_EMULATOR_'"$emulator"'_g' -i "" ${BUILDPATH}/${emulator}/Dockerfile
+		sed -e 's+EMULATOR+'"$emulator"'+g' -i "" ${BUILDPATH}/${emulator}/Dockerfile
 		sed -e 's_PATH_'"$EMULATORDIR"'_g' -i "" ${BUILDPATH}/${emulator}/Dockerfile	
 	fi	
 done

@@ -51,8 +51,11 @@
     with_items: "{{binfmt_hook.results}}"
 
   - name: apply binfmt hooks
-    shell: echo "{{item}}" >> {{binfmt_reg}}
-    with_items: "{{binfmt_rules}}"
+    shell: echo "{{item.1}}" >> {{binfmt_reg}}
+    with_together:
+      - "{{binfmt_emulators}}"
+      - "{{binfmt_rules}}"
+    when: "'{{item.0}}'.find('{{ansible_architecture}}') == -1"
 
   tasks:
   - name: docker package for Debian

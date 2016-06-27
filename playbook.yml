@@ -82,7 +82,7 @@
     file: path={{work_dir}}/arch/build.sh mode=0755
 
   - name: build all containers
-    include: containers.yml
+    include: tasks/containers.yml
     with_items: "{{binfmt_emulators}}"
 
   handlers:

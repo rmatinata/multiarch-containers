@@ -9,8 +9,8 @@
     work_dir: /tmp/wrk_dir
     binfmt_reg: /proc/sys/fs/binfmt_misc/register
   vars_files:
-    - vars.yml
-    - "hosts/{{ ansible_architecture }}.yml"
+    - vars/main.yml
+    - "vars/{{ ansible_architecture }}.yml"
 
   pre_tasks:
   - name: fix Fedora Ansible

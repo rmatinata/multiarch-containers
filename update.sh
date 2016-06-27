@@ -1,7 +1,7 @@
 #!/bin/bash
 OWNPATH=$(dirname "$(readlink -f "$BASH_SOURCE")")
 BUILDPATH=${OWNPATH}/arch
-VARSFILE="${OWNPATH}/vars.yml"
+VARSFILE="${OWNPATH}/vars/main.yml"
 source $BUILDPATH/env
 echo "OWN=$OWNPATH"
 

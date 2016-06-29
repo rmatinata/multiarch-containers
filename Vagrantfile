@@ -68,9 +68,10 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     if [ ! -f /vagrant/playbook.yml ]; then
       wrk_dir=$(mktemp -d)
+      BRANCH=master
       pushd $wrk_dir
-      curl -L -O -s https://github.com/rmatinata/multiarch-containers/archive/master.tar.gz
-      tar -zxf ./master.tar.gz
+      curl -L -O -s https://github.com/rmatinata/multiarch-containers/archive/${BRANCH}.tar.gz
+      tar -zxf ./${BRANCH}.tar.gz
       content=( */ )
       content=( "${content[@]%/}" )
       if [ ! -d /vagrant ]; then

@@ -1,7 +1,7 @@
 #!/bin/bash
 OWNPATH=$(dirname "$(readlink -f "$BASH_SOURCE")")
 BUILDPATH=${OWNPATH}/arch
-VARSFILE="${OWNPATH}/vars.yml"
+VARSFILE="${OWNPATH}/vars/main.yml"
 source $BUILDPATH/env
 echo "OWN=$OWNPATH"
 
@@ -15,7 +15,6 @@ versions=( "${versions[@]%/}" )
 
 cat > ${VARSFILE} <<EOF
 target_qemu_dir: ${EMULATORDIR}/
-qemu_url: ${QEMUURL}
 binfmt_emulators:
 EOF
 for version in "${versions[@]}"; do
@@ -43,7 +42,7 @@ EOF
 		image=$(cat ${BUILDPATH}/${emulator}/base)
 		cp ${OWNPATH}/Dockerfile.build ${BUILDPATH}/${emulator}/Dockerfile
 		sed -e 's_BASE_'"$image"'_g' -i "" ${BUILDPATH}/${emulator}/Dockerfile
-		sed -e 's_EMULATOR_'"$emulator"'_g' -i "" ${BUILDPATH}/${emulator}/Dockerfile
+		sed -e 's+EMULATOR+'"$emulator"'+g' -i "" ${BUILDPATH}/${emulator}/Dockerfile
 		sed -e 's_PATH_'"$EMULATORDIR"'_g' -i "" ${BUILDPATH}/${emulator}/Dockerfile	
 	fi	
 done

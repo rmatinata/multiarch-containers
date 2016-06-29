@@ -53,7 +53,7 @@ If everything went well, you should get containers for each supported architectu
  * * depends on the base image leveraged for each architecture 
  * <arch> is the targe architecture (ie for ppc64le you will get ppc64le/ubuntu-multiarch:x86_ppc64le).
 
-From then on, you can base your Dockerfiles, out of these new base images. For instance, if you are trying to work with s390x containers, you you have something along these lines in your Dockerfile:
+From then on, you can base your Dockerfiles, out of these new base images. For instance, if you are trying to work with s390x containers, you would have something along these lines in your Dockerfile:
 
 ```
 FROM s390x/ubuntu-multiarch:x86_s390x
@@ -65,7 +65,7 @@ FROM s390x/ubuntu-multiarch:x86_s390x
 If you are interesting in just using one of the pre-built containers, you can do something like:
 
 ```
-# docker -it --rm ppc64le/ubuntu-multiarch:x86_ppc64le /bin/bash
+# docker run -it --rm ppc64le/ubuntu-multiarch:x86_ppc64le /bin/bash
 root@:/# uname -a
 Linux 3.10.0-327.13.1.el7.x86_64 #1 SMP Thu Mar 31 16:04:38 UTC 2016 ppc64le ppc64le ppc64le GNU/Linux
 ```

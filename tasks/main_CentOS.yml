@@ -1,0 +1,8 @@
+- name: Activate native cgroups
+  lineinfile: dest=/usr/lib/systemd/system/docker.service
+    backup=True
+    backrefs=True
+    state=present
+    regexp='^ExecStart=/usr/bin/docker daemon\s?(([^-]*(-(?!-exec-opt native.cgroupdriver=cgroupfs).)?[^-]*)*$)'
+    line='ExecStart=/usr/bin/docker daemon --exec-opt native.cgroupdriver=cgroupfs \\1'
+  when: (ansible_architecture == "ppc64le") 

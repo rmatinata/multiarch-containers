@@ -13,9 +13,13 @@
     - "vars/{{ ansible_architecture }}.yml"
 
   pre_tasks:
-  - name: fix Fedora Ansible
-    raw: dnf install -y python2-dnf libselinux-python python2
+  - name: Fedora fixes
+    include: tasks/pre_Fedora.yml
     when: (ansible_os_family == "RedHat" and ansible_distribution == "Fedora")
+
+  - name: CentOS fixes
+    include: tasks/pre_CentOS.yml
+    when: (ansible_os_family == "RedHat" and ansible_distribution == "CentOS")
 
   - name: create working dir
     file: path={{work_dir}} state=directory mode=0755
@@ -71,8 +75,13 @@
   - name: install docker
     package : name={{docker_pkg}} state=present
     notify:
+    - reload docker
     - enable docker
     - restart docker
+
+  - name: CentOS fixes
+    include: tasks/main_CentOS.yml
+    when: (ansible_os_family == "RedHat" and ansible_distribution == "CentOS")
 
   post_tasks:
   - name: Copy Dockerfiles in place
@@ -86,10 +95,16 @@
     with_items: "{{binfmt_emulators}}"
 
   handlers:
+    - name: reload docker
+      service:
+        name: docker
+        state: reloaded
+
     - name: enable docker
       service:
         name: docker
         enabled: yes
+
     - name: restart docker
       service:
         name: docker

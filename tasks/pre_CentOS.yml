@@ -1,0 +1,12 @@
+- name: Configure Docker repository for ppc64le
+  blockinfile:
+    dest: /etc/yum.repos.d/docker-ppc64le.repo
+    create: yes
+    state: present
+    block: |
+      [docker_ppc64le]
+      name=Docker $basearch repository
+      baseurl=http://ftp.unicamp.br/pub/ppc64el/rhel/7_1/docker-ppc64el
+      enabled=0
+      gpgcheck=0
+  when: (ansible_architecture == "ppc64le")

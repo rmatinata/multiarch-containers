@@ -99,6 +99,7 @@
       service:
         name: docker
         state: reloaded
+      ignore_errors: True
 
     - name: enable docker
       service:

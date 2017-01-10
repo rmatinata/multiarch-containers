@@ -46,18 +46,18 @@ ansible-playbook ./multiarch-containers/playbook.yml
 If everything went well, you should get containers for each supported architecture, that you can work with in an x86 environment. The image tags follow the below pattern:
 
 ```
-*-multiarch:<host_arch>-<arch>
+*-multiarch:<host_arch>_<arch>
 ```
 
 ... where:
  * * depends on the base image leveraged for each architecture
  * <host_arch> host architecture in which you are running this 
- * <arch> is the target architecture (ie for ppc64le you will get ppc64le/ubuntu-multiarch:x86_ppc64le).
+ * <arch> is the target architecture (ie for ppc64le you will get ppc64le/ubuntu-multiarch:x86_64_ppc64le).
 
 From then on, you can base your Dockerfiles, out of these new base images. For instance, if you are trying to work with s390x containers, on an x86_64 machine, you would have something along these lines in your Dockerfile:
 
 ```
-FROM s390x/ubuntu-multiarch:x86_64-s390x
+FROM s390x/debian-multiarch:x86_64_s390x
 ...
 ```
 
@@ -66,7 +66,7 @@ FROM s390x/ubuntu-multiarch:x86_64-s390x
 If you are interesting in just using one of the pre-built containers, you can do something like this (assuming you are on x86_64):
 
 ```
-# docker run -it --rm ppc64le/ubuntu-multiarch:x86_64-ppc64le /bin/bash
+# docker run -it --rm ppc64le/ubuntu-multiarch:x86_64_ppc64le /bin/bash
 root@:/# uname -a
 Linux 3.10.0-327.13.1.el7.x86_64 #1 SMP Thu Mar 31 16:04:38 UTC 2016 ppc64le ppc64le ppc64le GNU/Linux
 ```
